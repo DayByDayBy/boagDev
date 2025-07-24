@@ -5,7 +5,7 @@ const Header: React.FC = () => {
     <header className="fixed top-4 left-4 z-10 flex items-start justify-between w-full max-w-screen-xl pr-8">
       <div className="flex flex-col">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">
-          Jim Downey
+          James Boag
         </h1>
         <p className="text-sm text-gray-600 mb-3">
           Software Developer + LLM botherer
@@ -22,8 +22,8 @@ const Header: React.FC = () => {
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            width="28" 
-            height="28" 
+            width="56" 
+            height="15" 
             viewBox="0 0 512 139"
             className="fill-gray-900"
           >
@@ -40,8 +40,8 @@ const Header: React.FC = () => {
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            width="28" 
-            height="28" 
+            width="56" 
+            height="15" 
             viewBox="0 0 512 128"
           >
             <path 
