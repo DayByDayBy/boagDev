@@ -14,7 +14,7 @@ const Header: React.FC = () => {
       
       <div className="flex items-center space-x-4 mt-1">
         <a 
-          href="https://github.com" 
+          href="https://github.com/DayByDayBy" 
           target="_blank" 
           rel="noopener noreferrer"
           className="hover:opacity-70 transition-opacity"
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
         </a>
         
         <a 
-          href="https://linkedin.com" 
+          href="https://www.linkedin.com/in/james-boag/" 
           target="_blank" 
           rel="noopener noreferrer"
           className="hover:opacity-70 transition-opacity"
