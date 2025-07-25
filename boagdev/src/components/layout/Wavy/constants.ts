@@ -1,0 +1,20 @@
+export const FREQUENCY = {
+  CHANGE: 0.0002533333,
+  MAX: 1,
+  MIN: 0.01,
+  INITIAL: 0.0101,
+};
+
+export const AMPLITUDE = {
+  CHANGE: 0.075,
+  MAX: 40,
+  MIN: 0,
+  INITIAL: 10,
+};
+
+export const PHASE = {
+  INITIAL: 0.000000001,
+  INCREMENT: 0.0000125,
+  DECREMENT: 0.000012,
+  DECREMENT_THRESHOLD: 0.01,
+};
