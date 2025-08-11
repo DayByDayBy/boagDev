@@ -17,6 +17,8 @@ const RunCatRun = () => {
   const [catPosition, setCatPosition] = useState(0);
   const [catVelocity, setCatVelocity] = useState(0);
   const [obstacles, setObstacles] = useState([]);
+  const [isJumping, setIsJumping] = useState(false);
+  const [collision, setCollision] = useState(false);
   
   const gameRef = useRef(null);
   const frameRef = useRef(0);
@@ -48,9 +50,11 @@ const RunCatRun = () => {
   const startGame = () => {
     setIsPlaying(true);
     setGameOver(false);
+    setCollision(false);
     setScore(0);
     setCatPosition(0);
     setCatVelocity(0);
+    setIsJumping(false);
     setObstacles([]);
     obstacleIdRef.current = 0;
     lastObstacleTimeRef.current = 0;
@@ -58,8 +62,9 @@ const RunCatRun = () => {
 
   // Make the cat jump when up arrow is pressed
   const jump = () => {
-    if (catPosition === 0) { // Only jump when on the ground
+    if (catPosition === 0 && !isJumping) { // Only jump when on the ground and not already jumping
       setCatVelocity(JUMP_FORCE);
+      setIsJumping(true);
     }
   };
 
@@ -69,8 +74,12 @@ const RunCatRun = () => {
 
     // Update cat position based on velocity and gravity
     setCatPosition(prev => {
-      const newPosition = prev + catVelocity;
-      return newPosition > 0 ? newPosition : 0; // Keep cat above ground
+      let newPosition = prev - catVelocity; // Subtract because in our coordinate system, up is negative
+      if (newPosition < 0) {
+        newPosition = 0;
+        setIsJumping(false); // Cat is back on the ground
+      }
+      return newPosition;
     });
 
     setCatVelocity(prev => prev + GRAVITY); // Apply gravity
@@ -104,8 +113,11 @@ const RunCatRun = () => {
           catRect.y < obstacleRect.y + obstacleRect.height &&
           catRect.y + catRect.height > obstacleRect.y
         ) {
+          // Collision detected
+          setCollision(true);
           setGameOver(true);
           setIsPlaying(false);
+          return updated; // Exit early to prevent further processing
         }
       }
 
@@ -175,7 +187,8 @@ const RunCatRun = () => {
           textAlign: 'center',
           backgroundColor: 'rgba(255, 255, 255, 0.8)',
           padding: '20px',
-          borderRadius: '10px'
+          borderRadius: '10px',
+          zIndex: 10
         }}>
           <h2>Run Cat Run!</h2>
           <p>Press SPACE to start</p>
@@ -193,9 +206,10 @@ const RunCatRun = () => {
           textAlign: 'center',
           backgroundColor: 'rgba(255, 255, 255, 0.8)',
           padding: '20px',
-          borderRadius: '10px'
+          borderRadius: '10px',
+          zIndex: 10
         }}>
-          <h2>Game Over!</h2>
+          <h2>{collision ? 'Ouch! Collision!' : 'Game Over!'}</h2>
           <p>Score: {score}</p>
           <button onClick={startGame} style={{
             padding: '10px 20px',
@@ -218,7 +232,8 @@ const RunCatRun = () => {
         left: '10px',
         fontSize: '20px',
         fontWeight: 'bold',
-        color: '#333'
+        color: '#333',
+        zIndex: 5
       }}>
         Score: {score}
       </div>
@@ -239,9 +254,11 @@ const RunCatRun = () => {
         bottom: `${GROUND_HEIGHT + catPosition}px`,
         width: `${CAT_WIDTH}px`,
         height: `${CAT_HEIGHT}px`,
-        backgroundColor: '#FFA500',
+        backgroundColor: collision ? '#ff6b6b' : '#FFA500',
         borderRadius: '50% 50% 0 0',
-        transition: 'bottom 0.1s linear'
+        transition: 'bottom 0.1s linear, background-color 0.3s',
+        transform: collision ? 'rotate(90deg)' : 'rotate(0deg)',
+        transformOrigin: 'center'
       }}>
         {/* Cat ears */}
         <div style={{
@@ -291,8 +308,16 @@ const RunCatRun = () => {
           width: '15px',
           height: '5px',
           backgroundColor: '#FFA500',
-          borderRadius: '0 5px 5px 0'
+          borderRadius: '0 5px 5px 0',
+          animation: isPlaying && !gameOver ? 'tailWag 0.5s infinite alternate' : 'none'
         }} />
+        {/* Animation style for tail wagging */}
+        <style>{`
+          @keyframes tailWag {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(20deg); }
+          }
+        `}</style>
       </div>
 
       {/* Obstacles */}
@@ -310,7 +335,8 @@ const RunCatRun = () => {
                           obstacle.type === 'chair' ? '#A52A2A' : 'transparent',
             borderRadius: obstacle.type === 'dog' ? '50%' : 
                          obstacle.type === 'puddle' ? '50%' : 
-                         obstacle.type === 'chair' ? '0' : '0'
+                         obstacle.type === 'chair' ? '0' : '0',
+            border: obstacle.type === 'pit' ? '2px solid #333' : 'none'
           }}
         >
           {/* Obstacle labels */}
