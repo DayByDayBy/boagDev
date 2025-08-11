@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
+// Define types for our game objects
+type Obstacle = {
+  id: number;
+  x: number;
+  type: 'dog' | 'puddle' | 'chair' | 'pit';
+};
+
 // Game constants
 const GRAVITY = 0.5;
 const JUMP_FORCE = -12;
@@ -9,24 +16,24 @@ const CAT_HEIGHT = 40;
 const GROUND_HEIGHT = 20;
 
 // Game component for a cat-themed scrolling game
-const RunCatRun = () => {
+const RunCatRun: React.FC = () => {
   // Game state management
   const [isPlaying, setIsPlaying] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [catPosition, setCatPosition] = useState(0);
   const [catVelocity, setCatVelocity] = useState(0);
-  const [obstacles, setObstacles] = useState([]);
+  const [obstacles, setObstacles] = useState<Obstacle[]>([]);
   const [isJumping, setIsJumping] = useState(false);
   const [collision, setCollision] = useState(false);
   
-  const gameRef = useRef(null);
-  const frameRef = useRef(0);
+  const gameRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<number>(0);
   const obstacleIdRef = useRef(0);
   const lastObstacleTimeRef = useRef(0);
 
   // Handle keyboard controls for jumping and starting the game
-  const handleKeyDown = useCallback((e) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.code === 'Space') {
       if (!isPlaying && !gameOver) {
         startGame();
@@ -127,7 +134,7 @@ const RunCatRun = () => {
     // Add new obstacles
     const now = Date.now();
     if (now - lastObstacleTimeRef.current > 1500) { // Add obstacle every 1.5 seconds
-      const obstacleTypes = ['dog', 'puddle', 'chair', 'pit'];
+      const obstacleTypes: Array<'dog' | 'puddle' | 'chair' | 'pit'> = ['dog', 'puddle', 'chair', 'pit'];
       const type = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
       
       setObstacles(prev => [

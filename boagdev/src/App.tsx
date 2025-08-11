@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import Header from './components/layout/Header'
 import CentralLogo from './components/layout/CentralLogo'
-import RunCatRun from './PossibleComponents/scrolling game/RunCatRun'
+import RunCatRun from './PossibleComponents/ScrollingGame/RunCatRun'
 
 function App() {
   const [count, setCount] = useState(0)
